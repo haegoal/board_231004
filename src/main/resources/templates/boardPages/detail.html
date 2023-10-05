@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="~{component/config :: config}"></th:block>
+</head>
+<body>
+
+<div class="container">
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>작성자</th>
+            <th>제목</th>
+            <th>내용</th>
+            <th>조회수</th>
+        </tr>
+            <td th:text="${board.id}"></td>
+            <td th:text="${board.boardWriter}"></td>
+            <td th:text="${board.boardTitle}"></td>
+            <td th:text="${board.boardContents}"></td>
+            <td th:text="${board.boardHits}"></td>
+            <td><input th:value="${board.id}" name="id" type="hidden"></td>
+            <td><input th:value="${board.boardPass}" name="boardPw" type="hidden"></td>
+        </tr>
+    </table>
+    <div id="btn-area">
+        <button class="btn btn-warning" th:onclick="check_fn('update')">수정</button>
+        <button class="btn btn-danger" th:onclick="check_fn('delete')">삭제</button>
+    </div>
+
+    <div id="checkPw" class="mt-5">
+
+    </div>
+</div>
+</body>
+<script th:inline="javascript">
+
+    const check_fn = (type) => {
+     document.querySelector("#checkPw").innerHTML =
+       `<input type="text" id="board-pass" placeholder="비밀번호">
+        <input type="button" onclick="pass_check('${type}')" value="확인">`;
+    }
+
+    const pass_check = (type) => {
+        const boardPass = document.querySelector("#board-pass").value;
+        const boardPw = [[${board.boardPass}]];
+        const id = [[${board.id}]];
+        if(boardPass==boardPw){
+            if(type=="update"){
+                location.href = `/board/update/${id}`;
+            }else if(type=="delete"){
+                $.ajax({
+                    type:"delete",
+                    url:`/board/${id}`,
+                    success:function(){
+                        location.href="/board";
+                    }
+                })
+            }
+        }else{
+            alert("비밀번호틀림")
+        }
+    }
+</script>
+</html>
