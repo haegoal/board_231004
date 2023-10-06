@@ -3,9 +3,11 @@ package com.icia.board;
 
 import com.icia.board.dto.BoardDTO;
 import com.icia.board.entity.BoardEntity;
+import com.icia.board.entity.BoardFileEntity;
 import com.icia.board.repository.BoardRepository;
 import com.icia.board.service.BoardService;
 import com.icia.board.utill.UtillClass;
+import jdk.swing.interop.SwingInterOpUtils;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,7 +16,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.IntStream;
 
 @SpringBootTest
@@ -33,12 +38,29 @@ public class BoardTest {
         return boardDTO;
     }
 
+    @Transactional
+    @Test
+    @DisplayName("참조관계 확인")
+    public void findTest(){
+        Optional<BoardEntity> boardEntityOptional = boardRepository.findById(67L);
+        BoardEntity boardEntity = boardEntityOptional.get();
+        List<BoardFileEntity> boardFileEntityList = boardEntity.getBoardFileEntityList();
+        boardFileEntityList.forEach(entity -> {
+            System.out.println(entity.getOriginalFileName());
+            System.out.println(entity.getStoredFileName());
+        });
+    }
+
     @Test
     @DisplayName("데이터 붓기")
     public void dataInsert(){
         IntStream.rangeClosed(1, 50).forEach(i -> {
             BoardDTO boardDTO = newBoard(i);
-            boardService.save(boardDTO);
+            try {
+                boardService.save(boardDTO);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         });
     }
 

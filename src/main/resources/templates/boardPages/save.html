@@ -2,15 +2,17 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <th:block th:replace="~{component/config :: config}"></th:block>
+  <div th:replace="~{component/nav :: nav}"></div>
 </head>
 <body>
 
 <div class="container">
-  <form action="/board/save" method="post">
+  <form action="/board/save" method="post" enctype="multipart/form-data">
     <input type="text" placeholder="작성자" name="boardWriter"><br>
     <input type="text" placeholder="제목" name="boardTitle"><br>
     <input type="text" placeholder="비번" name="boardPass"><br>
     <textarea type="text" placeholder="내용" name="boardContents"></textarea><br>
+    <input type="file" name="boardFile" class="form-control" multiple>
     <input type="submit" value="작성"><br>
   </form>
 </div>

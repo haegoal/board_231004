@@ -21,7 +21,13 @@ public interface BoardRepository extends JpaRepository<BoardEntity, Long> {
     List<BoardEntity> findByBoardTitleContainingOrderById(String q);
     List<BoardEntity> findByBoardWriterContainingOrderById(String q);
 
+    List<BoardEntity> findByBoardWriterContaining(String q);
+
+    Page<BoardEntity> findByBoardWriterContaining(String q, Pageable pageable);
+
     Page<BoardEntity> findByBoardTitleContaining(String q, Pageable pageable);
 
     Page<BoardEntity> findByBoardTitleContainingOrBoardWriterContaining(String q1, String q2, Pageable pageable);
+
+
 }
